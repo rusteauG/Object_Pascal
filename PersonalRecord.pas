@@ -21,12 +21,13 @@ end;
 
 begin
   // Direct initialization of all fields at once:
-  //person1 := Person('Alice', 30, 'New York');
+  //person1 := Person('Alice', 30, 'New York'); NOt ALlowed for Records
+  //Records do not use constructors like classes do. 
+  //initialize each field individually
+  	person1.Name := 'Neville';
+	person1.Age := 44;
+	person1.City := 'Mont Fleuri';
 
-  Writeln('Person Details:');
-  Writeln('Name: ', person1.Name);
-  Writeln('Age: ', person1.Age);
-  Writeln('City: ', person1.City);
 	DisplayPersonInfo(person1);
 	
 Readln;	
