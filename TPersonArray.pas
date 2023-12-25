@@ -37,7 +37,7 @@ Readln;
 end. 
 
 {
-*Note
+##Note##
 -----------------------------------------------------------------------------------------------------------------
 The DisplayPerson procedure now accepts an array of TPerson records as a parameter.
 The loop condition in the DisplayPerson procedure uses Low and High functions to iterate over the array correctly.
