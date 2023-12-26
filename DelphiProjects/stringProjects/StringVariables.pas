@@ -1,0 +1,241 @@
+﻿unit StringVariables;
+
+interface
+
+uses
+
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls,
+  Vcl.Menus;
+
+type
+  TfrmStringVariables = class(TForm)
+    edtPhrase: TEdit;
+    btnDisplayPangram: TButton;
+    btnUpperCase: TButton;
+    btnLowerCase: TButton;
+    btnInsert: TButton;
+    btnTrim: TButton;
+    pnlLength: TPanel;
+    btnStringReplace: TButton;
+    btnCopy: TButton;
+    pnlMessage: TPanel;
+    pnlLengthHeader: TPanel;
+    pnlMessageHeader: TPanel;
+    Button1: TButton;
+    btnDelete: TButton;
+    MainMenu1: TMainMenu;
+    mnuFile: TMenuItem;
+    mnuEdit: TMenuItem;
+    mnuFormat: TMenuItem;
+    mnuDisplayPangram: TMenuItem;
+    mnuCopy: TMenuItem;
+    N1: TMenuItem;
+    mnuInsert: TMenuItem;
+    mnuReplace: TMenuItem;
+    mnuDelete: TMenuItem;
+    mnuInsertv2: TMenuItem;
+    mnuUpperCase: TMenuItem;
+    mnuLowercase: TMenuItem;
+    N2: TMenuItem;
+    mnurim: TMenuItem;
+    procedure btnDisplayPangramClick(Sender: TObject);
+    procedure btnUpperCaseClick(Sender: TObject);
+    procedure btnLowerCaseClick(Sender: TObject);
+    procedure btnCopyClick(Sender: TObject);
+    procedure btnInsertClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure btnStringReplaceClick(Sender: TObject);
+    procedure btnDeleteClick(Sender: TObject);
+
+
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmStringVariables: TfrmStringVariables;
+  strCopied,strSelWord:string;
+const
+   SPEEDOFLIGHT =299792458;
+ var
+  strPhrase:String;
+  bteLetter,bteLetterCount:Byte;
+implementation
+uses
+  PangramList_u;
+
+{$R *.dfm}
+
+procedure TfrmStringVariables.btnCopyClick(Sender: TObject);
+var
+  bteCopyStartPos,bteCopyLen:byte;
+begin
+  strPhrase := edtPhrase.Text;
+  bteLetter := Length(strPhrase);
+  pnlLength.Caption := Concat('The Phrase has ',IntToStr(bteLetter),' letters');
+  strSelWord := InputBox('Copy','Which Word do you want to Copy?','dog');
+  bteCopyStartPos := pos(strSelWord,strPhrase);
+
+  if bteCopyStartPos > 0 then
+  begin
+    ShowMessage(strSelWord + ' Found at ' + IntToStr(bteCopyStartPos));
+    bteCopyLen := Length(strSelWord);
+    strCopied :=copy(strPhrase,bteCopyStartPos, bteCopyLen);
+
+  pnlMessage.Caption := Concat('You Copied ', strCopied);
+
+  end
+  else
+    ShowMessage(strSelWord + 'Not Found');
+
+end;
+
+procedure TfrmStringVariables.btnDeleteClick(Sender: TObject);
+var
+  delStr:String;
+  posdelStr:Byte;
+  flag:Boolean;
+  confirmResult: Integer;
+
+begin
+  strPhrase := edtPhrase.Text;
+  delStr := Trim(InputBox('DELETE','Delete Word/Phrase?',' '));
+  posdelStr := pos(delStr,strPhrase);
+  flag := false;
+  if posdelStr > 0  then
+  begin
+  confirmResult := MessageDlg('Are you sure you want to delete '
+                     + delStr + '?', mtConfirmation, [mbYes, mbNo], 0);
+  if confirmResult = mrYes then
+    begin
+      Delete(strPhrase,posdelStr,Length(delStr) );
+      ShowMessage('Deletion successful!');
+      pnlMessage.Caption := Concat(delStr,' Deleted !');
+      edtPhrase.Text := strPhrase;
+    end;
+
+  end
+  else
+  begin
+     ShowMessage('Word/Phrase not found in the input.');
+  end;
+end;
+
+procedure TfrmStringVariables.btnDisplayPangramClick(Sender: TObject);
+
+var
+  strMessage:string;
+
+
+begin
+   frmPangramList.ShowModal;
+   strPhrase := frmPangramList.strSelectPangram;
+   edtPhrase.Text := strPhrase;
+   strPhrase := edtPhrase.Text;
+   bteLetterCount := Length(strPhrase);
+
+   pnlLength.Caption := Concat('The Phrase has ',IntToStr(bteLetterCount),' letters');
+   pnlMessage.Caption := Concat('Deafult phrase loaded  in the speed of light (',IntToStr(SPEEDOFLIGHT),')');
+   end;
+
+procedure TfrmStringVariables.btnInsertClick(Sender: TObject);
+var
+  strMessage,firstStr,secStr,inputStr:string;
+  bteCopiedCount,firstStrLen,startSelWord:Byte;
+begin
+      inputStr := Trim(InputBox('INSERT!','Insert Word?',' '));
+      strMessage := strPhrase;
+      //Len of Copied word
+      bteCopiedCount:= Length(strSelWord);
+      //Pos of the copied word
+      startSelWord := pos(strSelWord,strMessage);
+      //Extract the first part of the sentence
+      firstStr := copy(strMessage,1,startSelWord+bteCopiedCount);
+
+            //len of the first extracted sentence
+      firstStrLen := Length(firstStr);
+      //Second extracted sent
+      secStr:= copy(strMessage,firstStrLen,Length(strMessage));
+      //concat first + insert word + second sent
+       ShowMessage(Concat(firstStr,inputStr,secStr));
+       pnlMessage.Caption := firstStr + inputStr + secStr;
+
+
+
+
+
+end;
+
+procedure TfrmStringVariables.btnLowerCaseClick(Sender: TObject);
+
+begin
+   strPhrase := edtPhrase.Text;
+   edtPhrase.Text := LowerCase(strPhrase);
+   pnlMessage.Caption := Concat('Formatted Text to LowerCase🆑🆑');
+end;
+
+procedure TfrmStringVariables.btnStringReplaceClick(Sender: TObject);
+var
+    strReplaceText,strNewValue:String;
+    posStrReplace:Byte;
+    myChar:char;
+begin
+    strPhrase := edtPhrase.Text;
+    strReplaceText := InputBox('Remove','Enter Word/Phrase to Replace From Text','');
+    {* if strReplcaeText in strPhrase
+    ( use pos(strReplaceText,strPhrase) >0 * }
+    posStrReplace := Pos(strReplaceText,strPhrase);
+    if posStrReplace > 0  then
+      begin
+        //Perform StringReplace
+
+        edtPhrase.SetFocus;
+
+        edtPhrase.SelStart := posStrReplace -1;
+        edtPhrase.SelLength := Length(strReplaceText);
+           // Highlight replaced text with custom drawing
+        edtPhrase.Color := clYellow;
+        strNewValue :=  InputBox('Replace','Enter Replacement: ','hog');
+        strPhrase := StringReplace(strPhrase,strReplaceText,strNewValue,
+                                    [rfReplaceAll,rfIgnoreCase]);
+        pnlMessage.Caption := strPhrase;
+
+
+
+      end
+      else
+        ShowMessage(' not Found !');
+
+
+end;
+
+procedure TfrmStringVariables.btnUpperCaseClick(Sender: TObject);
+
+begin
+   strPhrase := edtPhrase.Text;
+   edtPhrase.Text := UpperCase(strPhrase);
+   pnlMessage.Caption :=Concat('Formatted Text to UPPERCASE💌');
+end;
+
+procedure TfrmStringVariables.Button1Click(Sender: TObject);
+var
+   strStringToInsert:String;
+   btePositionToInsert:Byte;
+begin
+    strPhrase := edtPhrase.Text;
+    btePositionToInsert := Pos('Fox',strPhrase);
+    strStringToInsert := InputBox('Insert','Insert a new word or Phrase','');
+    Insert(strStringToInsert +' ',strPhrase,btePositionToInsert);
+
+    edtPhrase.Text := strPhrase;
+    bteLetterCount := Length(strPhrase);
+    pnlLength.Caption := Concat('The Phrase has ',IntToStr(bteLetterCount),' Letters');
+    pnlMessage.Caption := Concat('You inserted "',strStringToInsert, '" in position ',btePositionToInsert.ToString);
+end;
+
+
+
+end.
