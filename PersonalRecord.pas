@@ -21,6 +21,9 @@ begin
 type
   Rectangle = record
     Width, Height: Integer;
+    
+    {* Free Pascal does not support record methods directly. Record methods are a feature 
+    of Object Pascal, which is an extension of the Pascal language  used in Delphi *}
     function GetArea: Integer;
   end;
 
